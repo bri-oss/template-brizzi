@@ -10,7 +10,9 @@ module:
 - [Instalasi](#instalasi)
   - [Prerequisites](#prerequisites)
   - [How to Setup Project](#how-to-setup-project)
-  - [Payment](#payment)
+  - [Check Topup Status](#payment)
+  - [Topup Deposit](#caution)
+  - [Validate Card Number](#validate-card-number)
 - [Caution](#caution)
 - [Disclaimer](#disclaimer)
 
@@ -28,19 +30,16 @@ module:
 3. run composer install to install all dependencies
 ```
 
-### Payment
+### Check Topup Status
 ```bash
 1. fill partnerId and channelId
-2. fill partnerServiceId example '   55888'
-3. fill customerNo by default this template give you utils that can generate customerNo
-4. fill inquiryRequestId example 'e3bcb9a2-e253-40c6-aa77-d72cc138b744'
-5. fill value example 100000.00
-6. fill currency by default is IDR
-7. fill trxDateInit by default this template give you utils that can generate it example 2021-11-25T15:01:07+07:00
-8. fill sourceBankCode example 0002
-9. fill passApp example 'b7aee423dc7489dfa868426e5c950c677925'
-10. fill idApp example 'test'
-11. run command `php src/va_online_inquiry.php serve`
+2. run command `php src/va_online_inquiry.php serve`
+```
+
+### Validate Card Number
+```bash
+1. fill partnerId and channelId
+2. run command `php src/va_online_inquiry.php serve`
 ```
 
 ## Caution

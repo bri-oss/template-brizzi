@@ -12,7 +12,6 @@ use BRI\Util\GetAccessToken;
 
 $clientId = $_ENV['CONSUMER_KEY']; // customer key
 $clientSecret = $_ENV['CONSUMER_SECRET']; // customer secret
-$pKeyId = $_ENV['PRIVATE_KEY']; // private key
 
 // url path values
 $baseUrl = 'https://sandbox.partner.api.bri.co.id'; //base url
@@ -23,11 +22,14 @@ $channelId = '12345'; // channel id
 
 $getAccessToken = new GetAccessToken();
 
-[$accessToken, $timestamp] = $getAccessToken->get(
+$accessToken = $getAccessToken->getBRIAPI(
   $clientId,
-  $pKeyId,
+  $clientSecret,
   $baseUrl
 );
+
+$timestamp = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d\TH:i:s.000P');
+
 
 $directDebit = new Brizzi();
 
