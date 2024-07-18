@@ -1,6 +1,5 @@
 <?php
 
-
 require __DIR__ . '/../vendor/autoload.php';
 
 Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..' . '')->load();
@@ -16,10 +15,6 @@ $clientSecret = $_ENV['CONSUMER_SECRET']; // customer secret
 // url path values
 $baseUrl = 'https://sandbox.partner.api.bri.co.id'; //base url
 
-// change variables accordingly
-$partnerId = 'feedloop'; //partner id
-$channelId = '12345'; // channel id
-
 $getAccessToken = new GetAccessToken();
 
 $accessToken = $getAccessToken->getBRIAPI(
@@ -28,18 +23,25 @@ $accessToken = $getAccessToken->getBRIAPI(
   $baseUrl
 );
 
-$timestamp = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d\TH:i:s.000P');
+$date = new DateTime("now", new DateTimeZone("UTC"));
+
+$timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
+
+$body = [
+  'username' => 'test',
+  'brizziCardNo' => '6013500601496673',
+  'amount' => '5123.00'
+];
 
 
 $directDebit = new Brizzi();
 
 $response = $directDebit->topupDeposit(
   $clientSecret = $clientSecret, 
-  $partnerId = $partnerId,
   $baseUrl,
   $accessToken, 
-  $channelId,
-  $timestamp
+  $timestamp,
+  $body
 );
 
 echo $response;
