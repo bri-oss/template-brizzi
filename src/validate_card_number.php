@@ -1,6 +1,5 @@
 <?php
 
-
 require __DIR__ . '/../vendor/autoload.php';
 
 Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..' . '')->load();
@@ -25,13 +24,15 @@ $accessToken = $getAccessToken->getBRIAPI(
 );
 
 $date = new DateTime("now", new DateTimeZone("UTC"));
-
 $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
+
+$username = '';
+$brizziCardNo = '';
 
 // body
 $body = [
-  'username' => 'test',
-  'brizziCardNo' => '6013500601496673'
+  'username' => $username,
+  'brizziCardNo' => $brizziCardNo
 ];
 
 $directDebit = new Brizzi();
