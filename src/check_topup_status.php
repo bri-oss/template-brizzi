@@ -27,10 +27,10 @@ $date = new DateTime("now", new DateTimeZone("UTC"));
 
 $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
 
-$username = '';
-$brizziCardNo = '';
-$amount = '';
-$reff = '';
+$username = 'test';
+$brizziCardNo = '6013500601496673';
+$amount = '1000.00';
+$reff = '279424"';
 
 $body = [
   'username' => $username,

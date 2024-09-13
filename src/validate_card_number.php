@@ -26,8 +26,8 @@ $accessToken = $getAccessToken->getBRIAPI(
 $date = new DateTime("now", new DateTimeZone("UTC"));
 $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
 
-$username = '';
-$brizziCardNo = '';
+$username = 'test';
+$brizziCardNo = '6013500601496673';
 
 // body
 $body = [
