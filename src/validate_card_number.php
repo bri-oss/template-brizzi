@@ -1,10 +1,9 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-
-Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..' . '')->load();
-
 require __DIR__ . '/../../briapi-sdk/autoload.php';
+
+Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..')->load();
 
 use BRI\Brizzi\Brizzi;
 use BRI\Util\GetAccessToken;
@@ -26,8 +25,8 @@ $accessToken = $getAccessToken->getBRIAPI(
 $date = new DateTime("now", new DateTimeZone("UTC"));
 $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
 
-$username = 'test';
-$brizziCardNo = '6013500601496673';
+$username = '';
+$brizziCardNo = '';
 
 // body
 $body = [
@@ -38,7 +37,7 @@ $body = [
 $directDebit = new Brizzi();
 
 $response = $directDebit->validateCardNumber(
-  $clientSecret = $clientSecret, 
+  $clientSecret,
   $baseUrl,
   $accessToken,
   $timestamp,
