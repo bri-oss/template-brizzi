@@ -8,44 +8,65 @@ Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..')->load();
 use BRI\Brizzi\Brizzi;
 use BRI\Util\GetAccessToken;
 
-$clientId = $_ENV['CONSUMER_KEY']; // customer key
-$clientSecret = $_ENV['CONSUMER_SECRET']; // customer secret
+$clientId = $_ENV['CONSUMER_KEY'] ?? null; // customer key
+$clientSecret = $_ENV['CONSUMER_SECRET'] ?? null; // customer secret
+
+if (!$clientId || !$clientSecret) {
+  die('Missing client credentials in environment variables.');
+}
 
 // url path values
 $baseUrl = 'https://sandbox.partner.api.bri.co.id'; //base url
 
-$getAccessToken = new GetAccessToken();
+try {
+  $getAccessToken = new GetAccessToken();
 
-$accessToken = $getAccessToken->getBRIAPI(
-  $clientId,
-  $clientSecret,
-  $baseUrl
-);
+  $accessToken = $getAccessToken->getBRIAPI(
+    $clientId,
+    $clientSecret,
+    $baseUrl
+  );
 
-$date = new DateTime("now", new DateTimeZone("UTC"));
+  if (!$accessToken) {
+    throw new Exception('Failed to retrieve access token.');
+  }
 
-$timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
+  $date = new DateTime("now", new DateTimeZone("UTC"));
 
-$username = '';
-$brizziCardNo = '';
-$amount = '';
-$reff = '';
+  $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
 
-$body = [
-  'username' => $username,
-  'brizziCardNo' => $brizziCardNo,
-  'amount' => $amount,
-  'reff' => $reff
-];
+  $username = filter_var('', FILTER_SANITIZE_STRING);
+  $brizziCardNo = filter_var('', FILTER_SANITIZE_STRING);
+  $amount = filter_var('', FILTER_SANITIZE_STRING);
+  $reff = filter_var('', FILTER_SANITIZE_STRING);
 
-$directDebit = new Brizzi();
+  if (
+    empty($username) || 
+    empty($brizziCardNo) || 
+    empty($amount) || 
+    empty($reff)) {
+    throw new Exception('Invalid input parameter variables');
+  }
 
-$response = $directDebit->checkTopupStatus(
-  $clientSecret, 
-  $baseUrl,
-  $accessToken,
-  $timestamp,
-  $body
-);
+  $body = [
+    'username' => $username,
+    'brizziCardNo' => $brizziCardNo,
+    'amount' => $amount,
+    'reff' => $reff
+  ];
 
-echo $response;
+  $directDebit = new Brizzi();
+
+  $response = $directDebit->checkTopupStatus(
+    $clientSecret, 
+    $baseUrl,
+    $accessToken,
+    $timestamp,
+    $body
+  );
+
+  echo $response;
+} catch (Exception $e) {
+  echo 'Error: ' . $e->getMessage();
+  exit(1);
+}

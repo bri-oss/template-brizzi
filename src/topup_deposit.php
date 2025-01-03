@@ -8,43 +8,63 @@ Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..')->load();
 use BRI\Brizzi\Brizzi;
 use BRI\Util\GetAccessToken;
 
-$clientId = $_ENV['CONSUMER_KEY']; // customer key
-$clientSecret = $_ENV['CONSUMER_SECRET']; // customer secret
+$clientId = $_ENV['CONSUMER_KEY'] ?? null; // customer key
+$clientSecret = $_ENV['CONSUMER_SECRET'] ?? null; // customer secret
+
+if (!$clientId || !$clientSecret) {
+  die('Missing client credentials in environment variables.');
+}
 
 // url path values
 $baseUrl = 'https://sandbox.partner.api.bri.co.id'; //base url
 
-$getAccessToken = new GetAccessToken();
+try {
+  $getAccessToken = new GetAccessToken();
 
-$accessToken = $getAccessToken->getBRIAPI(
-  $clientId,
-  $clientSecret,
-  $baseUrl
-);
+  $accessToken = $getAccessToken->getBRIAPI(
+    $clientId,
+    $clientSecret,
+    $baseUrl
+  );
 
-$date = new DateTime("now", new DateTimeZone("UTC"));
+  if (!$accessToken) {
+    throw new Exception('Failed to retrieve access token.');
+  }
 
-$timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
+  $date = new DateTime("now", new DateTimeZone("UTC"));
 
-$username = '';
-$brizziCardNo = '';
-$amount = ''; //eg: 1000.00
+  $timestamp = $date->format('Y-m-d\TH:i:s') . '.' . substr($date->format('u'), 0, 3) . 'Z';
 
-$body = [
-  'username' => $username,
-  'brizziCardNo' => $brizziCardNo,
-  'amount' => $amount
-];
+  $username = filter_var('', FILTER_SANITIZE_STRING);
+  $brizziCardNo = filter_var('', FILTER_SANITIZE_STRING);
+  $amount = filter_var('', FILTER_SANITIZE_STRING); //eg: '1000.00'
+
+  if (
+    empty($username) || 
+    empty($brizziCardNo) || 
+    empty($amount)) {
+    throw new Exception('Invalid input parameter variables');
+  }
+
+  $body = [
+    'username' => $username,
+    'brizziCardNo' => $brizziCardNo,
+    'amount' => $amount
+  ];
 
 
-$directDebit = new Brizzi();
+  $directDebit = new Brizzi();
 
-$response = $directDebit->topupDeposit(
-  $clientSecret, 
-  $baseUrl,
-  $accessToken, 
-  $timestamp,
-  $body
-);
+  $response = $directDebit->topupDeposit(
+    $clientSecret, 
+    $baseUrl,
+    $accessToken, 
+    $timestamp,
+    $body
+  );
 
-echo $response;
+  echo $response;
+} catch (Exception $e) {
+  echo 'Error: ' . $e->getMessage();
+  exit(1);
+}
