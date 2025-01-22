@@ -6,7 +6,9 @@ require __DIR__ . '/../../briapi-sdk/autoload.php';
 Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/..')->load();
 
 use BRI\Brizzi\Brizzi;
+use BRI\Util\ExecuteCurlRequest;
 use BRI\Util\GetAccessToken;
+use BRI\Util\PrepareRequest;
 
 function getCredentials(): array {
   $clientId = $_ENV['CONSUMER_KEY'] ?? null;
@@ -64,7 +66,13 @@ function fetchCheckTopupStatus(
   string $timestamp,
   array $body
 ): string {
-  $directDebit = new Brizzi();
+  $executeCurlRequest = new ExecuteCurlRequest();
+  $prepareRequest = new PrepareRequest();
+
+  $directDebit = new Brizzi(
+    $executeCurlRequest,
+    $prepareRequest
+  );
 
   $response = $directDebit->checkTopupStatus(
     $clientSecret, 
@@ -88,7 +96,13 @@ function fetchTopupDeposit(
   string $timestamp,
   array $body
 ): string {
-  $directDebit = new Brizzi();
+  $executeCurlRequest = new ExecuteCurlRequest();
+  $prepareRequest = new PrepareRequest();
+
+  $directDebit = new Brizzi(
+    $executeCurlRequest,
+    $prepareRequest
+  );
 
   $response = $directDebit->topupDeposit(
     $clientSecret, 
@@ -112,7 +126,13 @@ function fetchValidateCardNumber(
   string $timestamp,
   array $body
 ): string {
-  $directDebit = new Brizzi();
+  $executeCurlRequest = new ExecuteCurlRequest();
+  $prepareRequest = new PrepareRequest();
+
+  $directDebit = new Brizzi(
+    $executeCurlRequest,
+    $prepareRequest
+  );
 
   $response = $directDebit->validateCardNumber(
     $clientSecret,
